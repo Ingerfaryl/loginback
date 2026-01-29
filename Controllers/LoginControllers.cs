@@ -15,7 +15,7 @@ namespace login.Controllers
         {
             _context = context;
         }
-        [HttpPost]
+        [HttpPost("login")]
         public async Task<ActionResult<LoginResponse>> Login([FromBody] LoginRequest request)
         {
             if (!ModelState.IsValid)
@@ -29,9 +29,6 @@ namespace login.Controllers
 
             try
             {
-                // LOG 1: Ver qué estamos buscando
-                Console.WriteLine($"Buscando usuario: {request.Usuario}");
-
                 // Buscar usuario con sus relaciones
                 var usuario = await _context.Usuarios
                     .Include(u => u.Persona)
@@ -43,23 +40,15 @@ namespace login.Controllers
                 // LOG 2: Ver si encontramos el usuario
                 if (usuario == null)
                 {
-                    Console.WriteLine("Usuario NO encontrado en la base de datos");
                     return Ok(new LoginResponse
                     {
                         Success = false,
-                        Message = "Usuario o contraseña incorrectos"
+                        Message = "Usuario no encontrado"
                     });
                 }
 
-                Console.WriteLine($"Usuario encontrado: {usuario.NombreUsuario}");
-                Console.WriteLine($"Hash en BD: {usuario.Contraseña}");
-                Console.WriteLine($"Contraseña ingresada: {request.Contraseña}");
-
                 // Verificar contraseña (usa BCrypt para mayor seguridad)
                 bool contraseñaValida = BCrypt.Net.BCrypt.Verify(request.Contraseña, usuario.Contraseña);
-
-                // LOG 3: Ver resultado de la verificación
-                Console.WriteLine($"Contraseña válida: {contraseñaValida}");
 
                 if (!contraseñaValida)
                 {
@@ -108,29 +97,6 @@ namespace login.Controllers
             }
         }
 
-        [HttpPost("generar-hash")]
-        public ActionResult GenerarHash([FromBody] string password)
-        {
-            try
-            {
-                string hash = BCrypt.Net.BCrypt.HashPassword(password);
-
-                // También probamos la verificación inmediatamente
-                bool verifica = BCrypt.Net.BCrypt.Verify(password, hash);
-
-                return Ok(new
-                {
-                    password,
-                    hash,
-                    verifica,
-                    sqlUpdate = $"UPDATE tb_usuario SET contraseña = '{hash}' WHERE usuario = 'Alex2601';"
-                });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { error = ex.Message });
-            }
-        }
         [HttpPost("registro")]
         public async Task<ActionResult<RegistroResponse>> Registro([FromBody] RegistroRequest request)
         {
@@ -196,7 +162,7 @@ namespace login.Controllers
                 var usuario = new Usuario
                 {
                     IdPersona = persona.IdPersona,
-                    IdPerfil = request.IdPerfil ?? 2, // Por defecto perfil 2 (usuario normal)
+                    IdPerfil = request.IdPerfil??1, // Por defecto perfil 2 (usuario normal)
                     NombreUsuario = request.Usuario,
                     Contraseña = contraseñaHash
                 };
@@ -225,5 +191,32 @@ namespace login.Controllers
                 });
             }
         }
+
+        [HttpPost("hash")]
+        public ActionResult<string> GenerarHash([FromBody] string password)
+        {
+            if (string.IsNullOrWhiteSpace(password))
+                return BadRequest("La contraseña no puede estar vacía.");
+
+            try
+            {
+                string hash = BCrypt.Net.BCrypt.HashPassword(password);
+                return Ok(new
+                {
+                    password,
+                    hash
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "Error al generar hash",
+                    error = ex.Message
+                });
+            }
+        }
+
     }
 }

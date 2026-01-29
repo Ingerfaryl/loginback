@@ -33,6 +33,6 @@ namespace login.Dto
         [StringLength(250, ErrorMessage = "El correo no puede exceder 250 caracteres")]
         public string? Correo { get; set; }
 
-        public int? IdPerfil { get; set; } // Opcional, por defecto será 2
+        public int? IdPerfil { get; set; } 
     }
 }
