@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using login.Utils;
 using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace login.Models
 {
@@ -21,8 +22,11 @@ namespace login.Models
                 {
                     await conn.OpenAsync();
                     var spParams = new DynamicParameters();
-                    spParams.Add("@opcion");
-                    var resultado = await conn.QueryAsync("spUsuarios", commandType: System.Data.CommandType.StoredProcedure);
+                    spParams.Add("@opcion",opcion,DbType.Int16,ParameterDirection.Input);
+                    var resultado = await conn.QueryAsync(
+                        "uspUsuarios", 
+                        spParams,
+                        commandType: CommandType.StoredProcedure);
                     return new RespuestasApi
                     {
                         StatusCode = System.Net.HttpStatusCode.OK,
