@@ -8,11 +8,11 @@ namespace login.Data
             : base(options)
         {
         }
-        public DbSet<Persona>? Personas { get; set; }
-        public DbSet<Perfil>? Perfiles { get; set; }
-        public DbSet<Usuario>? Usuarios { get; set; }
-        public DbSet<Ventana>? Ventanas { get; set; }
-        public DbSet<PerfilVentana>? PerfilVentanas { get; set; }
+        public DbSet<Persona> Personas { get; set; }
+        public DbSet<Perfil> Perfiles { get; set; }
+        public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<Ventana> Ventanas { get; set; }
+        public DbSet<PerfilVentana> PerfilVentanas { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

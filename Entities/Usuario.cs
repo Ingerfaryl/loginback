@@ -27,9 +27,9 @@ namespace login.Entities
 
         // Navegación
         [ForeignKey("IdPersona")]
-        public virtual Persona? Persona { get; set; }
+        public virtual Persona Persona { get; set; }
 
         [ForeignKey("IdPerfil")]
-        public virtual Perfil? Perfil { get; set; }
+        public virtual Perfil Perfil { get; set; }
     }
 }

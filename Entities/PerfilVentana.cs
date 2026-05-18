@@ -29,6 +29,6 @@ namespace login.Entities
         public virtual Perfil? Perfil { get; set; }
 
         [ForeignKey("IdVentana")]
-        public virtual Ventana? Ventana { get; set; }
+        public virtual Ventana Ventana { get; set; }
     }
 }

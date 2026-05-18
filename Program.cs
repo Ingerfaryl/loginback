@@ -1,5 +1,6 @@
-using Microsoft.EntityFrameworkCore;
 using login.Data;
+using login.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,7 @@ builder.Services.AddCors(options =>
               .AllowAnyHeader();
     });
 });
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 var app = builder.Build();
 
@@ -32,13 +34,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseHttpsRedirection(); 
 app.UseRouting();
-
-app.UseCors("AllowAll");
-app.UseHttpsRedirection();
-
+app.UseCors("AllowAll"); 
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

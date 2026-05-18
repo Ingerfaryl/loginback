@@ -15,7 +15,7 @@ namespace login.Entities
         public string? NombrePerfil { get; set; }
 
         // Navegación
-        public virtual ICollection<Usuario>? Usuarios { get; set; }
-        public virtual ICollection<PerfilVentana>? PerfilVentanas { get; set; }
+        public virtual ICollection<Usuario> Usuarios { get; set; }
+        public virtual ICollection<PerfilVentana> PerfilVentanas { get; set; }
     }
 }

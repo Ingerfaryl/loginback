@@ -34,6 +34,6 @@ namespace login.Entities
         public string? Correo { get; set; }
 
         // Navegación
-        public virtual Usuario? Usuario { get; set; }
+        public virtual Usuario Usuario { get; set; }
     }
 }
